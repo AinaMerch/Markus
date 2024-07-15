@@ -454,6 +454,20 @@ describe GroupsController do
           expect(flash[:error]).to be_blank
         end
 
+        it 'runs the test multiple times to check for flakiness' do
+          count = 100
+          test_file = 'spec/controllers/groups_controller_spec.rb'
+          test_name = '#create_groups_when_students_work_alone ' \
+                      'when assignment.group_max = 1 creates groups for individual students'
+
+          count.times do |i|
+            puts "Running test iteration #{i + 1}"
+            command = "docker compose run --rm rails bundle exec rspec #{test_file} -e \"#{test_name}\""
+            success = system(command)
+            expect(success).to be_truthy, "Test failed on iteration #{i + 1}"
+          end
+        end
+
         it 'responds with _poll_job template' do
           get_as instructor, :create_groups_when_students_work_alone,
                  params: { course_id: course.id, assignment_id: assignment.id },
