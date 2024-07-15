@@ -462,7 +462,7 @@ describe GroupsController do
 
           count.times do |i|
             puts "Running test iteration #{i + 1}"
-            command = "docker compose run --rm rails bundle exec rspec #{test_file} -e \"#{test_name}\""
+            command = "bundle exec rspec #{test_file} -e \"#{test_name}\""
             success = system(command)
             expect(success).to be_truthy, "Test failed on iteration #{i + 1}"
           end
